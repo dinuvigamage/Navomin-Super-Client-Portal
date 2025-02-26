@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import Navbar from "../components/Nabar.jsx";
+import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
 
 const products = [

@@ -20,8 +20,8 @@ const Footer = () => (
         <input
           type="text"
           className="form-control"
-          placeholder="Input Your email"
-          aria-label="Input Your email"
+          placeholder="Input Your Email"
+          aria-label="Input Your Email"
           aria-describedby="button-addon2"
         />
         <button className="btn btn-primary" type="button" id="button-addon2">
