@@ -1,8 +1,15 @@
+/* eslint-disable react/prop-types */
 import  { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const CardPayment = () => {
+const CardPayment = ({setPaymentTrigger, setPaymentSuccess, handlePlaceOrder}) => {
   const [selectedCard, setSelectedCard] = useState("credit");
+
+  const handlePaymentTrigger = () => {
+    setPaymentTrigger(false);
+    setPaymentSuccess(true);
+    handlePlaceOrder();
+  }
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
@@ -55,7 +62,8 @@ const CardPayment = () => {
             <a href="#" className="text-decoration-none">COVID-19 Safety Requirements</a>.
           </p>
 
-          <button type="submit" className="btn btn-primary w-100">
+          <button type="submit" className="btn btn-primary w-100"
+            onClick={handlePaymentTrigger}>
             Confirm and pay
           </button>
         </form>

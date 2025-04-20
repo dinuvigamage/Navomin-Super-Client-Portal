@@ -1,41 +1,70 @@
-import { useState } from "react";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import Navbar from "../components/Navbar.jsx";
 import Footer from "../components/Footer.jsx";
+import {
+  getProductImage,
+  getProducts,
+  getProductSize,
+} from "../apis/products.js";
+import { href, Link } from "react-router-dom";
 
-const products = [
-  { name: "Bananas", price: "Rs.230.00", image: "images/bananas.jpg" },
-  { name: "Strawberries", price: "Rs.230.00/pack", image: "images/strawberries.jpg" },
-  { name: "Bread", price: "Rs.150.00", image: "images/bread.jpg" },
-  { name: "Milk", price: "Rs.500.00/carton", image: "images/milk.jpg" },
-  { name: "Bananas", price: "Rs.230.00", image: "images/bananas.jpg" },
-  { name: "Strawberries", price: "Rs.230.00/pack", image: "images/strawberries.jpg" },
-  { name: "Bread", price: "Rs.150.00", image: "images/bread.jpg" },
-  { name: "Milk", price: "Rs.500.00/carton", image: "images/milk.jpg" },
-  { name: "Bananas", price: "Rs.230.00", image: "images/bananas.jpg" },
-  { name: "Strawberries", price: "Rs.230.00/pack", image: "images/strawberries.jpg" },
-  { name: "Bread", price: "Rs.150.00", image: "images/bread.jpg" },
-  { name: "Milk", price: "Rs.500.00/carton", image: "images/milk.jpg" },
-];
+const ITEMS_PER_PAGE = 12;
 
-const ITEMS_PER_PAGE = 8;
-
-const ProductCard = ({ product }) => (
+const ProductCard = ({ product, price, image }) => (
   <div className="card shadow-sm">
-    <img src={product.image} className="card-img-top" alt={product.name} />
+    <img src={image} alt={product.Product_Name} className="card-img-top" />
     <div className="card-body">
-      <h5 className="card-title">{product.name}</h5>
-      <p className="card-text">Price: {product.price}</p>
+      <h5 className="card-title">{product.Product_Name}</h5>
+      <p className="card-text">Price: {price}</p>
     </div>
   </div>
 );
 
 const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [product, setProduct] = useState([]);
+  const [productSize, setProductSize] = useState([]);
+  const [productImage, setProductImage] = useState([]);
 
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  // api call to fetch products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      getProducts()
+        .then((response) => {
+          setProduct(response);
+        })
+        .catch((error) => {
+          console.error("Error fetching products:", error);
+        });
+
+      getProductSize()
+        .then((response) => {
+          setProductSize(response);
+        })
+        .catch((error) => {
+          console.error("Error fetching product sizes:", error);
+        });
+
+      getProductImage()
+        .then((response) => {
+          setProductImage(response);
+        })
+        .catch((error) => {
+          console.error("Error fetching product images:", error);
+        });
+    };
+    fetchProducts();
+  }, []);
+
+  const totalPages = Math.ceil(product.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const selectedProducts = products.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const selectedProducts = product.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const nextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
@@ -57,7 +86,11 @@ const HomePage = () => {
             <span className="input-group-text">
               <FiSearch />
             </span>
-            <input type="text" className="form-control" placeholder="Search for products..." />
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search for products..."
+            />
             <button className="btn btn-primary">Search</button>
           </div>
         </div>
@@ -66,18 +99,48 @@ const HomePage = () => {
         <div className="row g-4 mt-3">
           {selectedProducts.map((product, index) => (
             <div key={index} className="col-md-3">
-              <ProductCard product={product} />
+              <Link
+                to={`/product/${product.Product_ID}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <ProductCard
+                  product={product}
+                  price={
+                    productSize.filter(
+                      (size) =>
+                        size.Product_ID === product.Product_ID &&
+                        (size.Size === "1kg" || size.Size === "1")
+                    )[0]?.Price || "Rs.0.00" /* Default price */
+                  }
+                  image={
+                    productImage.filter(
+                      (image) => image.Product_ID === product.Product_ID
+                    )[0]?.Image_Link || "images/default.jpg" /* Default image */
+                  }
+                />
+              </Link>
             </div>
           ))}
         </div>
 
         {/* Pagination Controls */}
         <div className="d-flex justify-content-center mt-4">
-          <button className="btn btn-primary me-2" onClick={prevPage} disabled={currentPage === 1}>
+          <button
+            className="btn btn-primary me-2"
+            onClick={prevPage}
+            disabled={currentPage === 1}
+          >
             Previous
           </button>
-          <span className="align-self-center"> {currentPage} of {totalPages}</span>
-          <button className="btn btn-primary ms-2" onClick={nextPage} disabled={currentPage === totalPages}>
+          <span className="align-self-center">
+            {" "}
+            {currentPage} of {totalPages}
+          </span>
+          <button
+            className="btn btn-primary ms-2"
+            onClick={nextPage}
+            disabled={currentPage === totalPages}
+          >
             Next
           </button>
         </div>

@@ -25,7 +25,7 @@ function App() {
         <Route path="/OrderConfirmation" element={<OrderConfirmation />} />
         <Route path="/OrderConfirmation1" element={<OrderConfirmation1/>} />
         <Route path="/Signup" element={<Signup />} />
-        <Route path="/Product" element={<Product />} />
+        <Route path="/product/:id" element={<Product />} />
       </Routes>
     </Router>
   );

@@ -1,21 +1,32 @@
+/* eslint-disable no-unused-vars */
 import React, { useCallback } from "react";
 import { FiMenu } from "react-icons/fi";
 import { FaShoppingCart, FaCog } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import GlobalVars from "../globalVars";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const user = {
-    name: "Amanda",
-    profilePic: "images/profile.jpg",
-    isLoggedIn: false,
-  };
+  // const user = {
+  //   name: "Amanda",
+  //   profilePic: "images/profile.jpg",
+  //   isLoggedIn: false,
+  // };
 
-  const handleNavigation = useCallback((path) => {
-    navigate(path);
-  }, [navigate]);
+  const [user, logoutUser] = GlobalVars();
+
+  const handleNavigation = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
+
+  const handleLogout = () => {
+    logoutUser(); // Call the logout function from GlobalVars
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-2 px-3">
@@ -31,7 +42,10 @@ const Navbar = () => {
         </button>
 
         {/* Logo */}
-        <a className="navbar-brand fw-bold ms-3 d-flex align-items-center" href="/">
+        <a
+          className="navbar-brand fw-bold ms-3 d-flex align-items-center"
+          href="/"
+        >
           <img
             src="images/Logo.png"
             alt="Logo"
@@ -41,13 +55,16 @@ const Navbar = () => {
         </a>
 
         {/* Navigation Links */}
-        <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
+        <div
+          className="collapse navbar-collapse justify-content-center"
+          id="navbarNav"
+        >
           <ul className="navbar-nav">
             {[
-              { name: "Home", path: "/" },
-              { name: "Products", path: "/products" },
-              { name: "Pre-Order Bakery", path: "/preorderbakery" },
-              { name: "My Orders", path: "/myorders" },
+              { name: "HOME", path: "/" },
+              // { name: "Products", path: "/products" },
+              { name: "PRE-ORDER BAKERY", path: "/preorderbakery" },
+              { name: "MY ORDERS", path: "/myorders" },
             ].map((item) => (
               <li className="nav-item" key={item.path}>
                 <button
@@ -68,7 +85,7 @@ const Navbar = () => {
 
         {/* User & Cart Section */}
         <div className="d-flex align-items-center">
-          {user.isLoggedIn ? (
+          {user ? (
             <div className="d-flex align-items-center">
               {/* Profile Image */}
               <div
@@ -77,7 +94,7 @@ const Navbar = () => {
                 style={{ cursor: "pointer" }}
               >
                 <img
-                  src={user.profilePic}
+                  src={"https://i.imgur.com/GPee7gF.jpg"}
                   alt="Profile"
                   className="rounded-circle me-2"
                   style={{ width: "40px", height: "40px" }}
@@ -102,19 +119,22 @@ const Navbar = () => {
                 onClick={() => handleNavigation("/profile")}
                 style={{ cursor: "pointer" }}
               >
-                <span className="fw-bold">{user.name}</span>
+                <span className="fw-bold">{user.First_Name}</span>
                 <span className="text-success" style={{ fontSize: "12px" }}>
                   View profile
                 </span>
               </div>
 
               {/* Settings Icon */}
-              <button className="btn me-2" onClick={() => handleNavigation("/settings")}>
+              {/* <button className="btn me-2" onClick={() => handleNavigation("/settings")}>
                 <FaCog className="fs-5 text-dark" />
-              </button>
+              </button> */}
 
               {/* Logout Button */}
-              <button className="btn btn-light text-danger border border-danger py-1">
+              <button
+                className="btn btn-light text-danger border border-danger py-1"
+                onClick={handleLogout}
+              >
                 Log out
               </button>
             </div>
@@ -123,7 +143,7 @@ const Navbar = () => {
               className="btn btn-primary me-3 py-1"
               onClick={() => handleNavigation("/login")}
             >
-              Login/Signup
+              Login
             </button>
           )}
 
@@ -140,7 +160,6 @@ const Navbar = () => {
                   : "text-dark"
               }`}
             />
-            
           </div>
         </div>
       </div>
