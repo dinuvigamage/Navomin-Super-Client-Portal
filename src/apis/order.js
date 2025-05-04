@@ -80,3 +80,15 @@ export const addPreOrderItem = async (preOrderItem) => {
     throw error;
   }
 };
+
+export const updatePreOrderStatus = async (preOrderId, status) => {
+  try {
+    const response = await axios.put(`${API_URL}/preOrder/status/${preOrderId}`, {
+      Status: status,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating pre-order status:", error);
+    throw error;
+  }
+};

@@ -107,7 +107,13 @@ const PreOrderBakery = () => {
               User_ID: user.User_ID,
             })
               .then((response) => {
-                setCart(response);
+                getCartById(user.User_ID)
+                  .then((response) => {
+                    setCart(response);
+                  })
+                  .catch((error) => {
+                    console.error("Error fetching cart:", error);
+                  });
               })
               .catch((error) => {
                 console.error("Error adding cart:", error);

@@ -36,8 +36,8 @@ const OrderConfirmation = () => {
   const cartId = finalizedOrder.cartId || null;
 
   const [finalPayment, setFinalPayment] = useState(
-    (normalOrders.paymentMethod === "online" ? normalOrders.totalAmount : 0) +
-      preOrders.totalAmount
+    normalOrders.paymentMethod === "online" ? normalOrders.totalAmount : 0
+    // + preOrders.totalAmount
   );
 
   const [paymentOption, setPaymentOption] = useState("full");
@@ -59,7 +59,7 @@ const OrderConfirmation = () => {
       const orderResponse = await addAnOrder({
         User_ID: user.User_ID,
         Pickup_Time: normalOrders.pickupTime,
-        Status: "Accepted",
+        Status: null,
         Total_Amount: normalOrders.totalAmount,
       });
       orderIdResponse = orderResponse.Order_ID;
@@ -118,8 +118,14 @@ const OrderConfirmation = () => {
   };
 
   const handlePayment = () => {
+    handlePlaceOrder();
     if (finalPayment > 0) setPaymentTrigger(true);
-    else handlePlaceOrder();
+    if (finalPayment === 0) {
+      setPaymentSuccess(true);
+      setTimeout(() => {
+        navigate("/myOrders", { replace: true });
+      }, 2000);
+    }
   };
 
   return (
@@ -221,9 +227,10 @@ const OrderConfirmation = () => {
             </Col>
             <Col md={6}>
               <p>
-                Pre total price is: <strong>Rs. {preOrders.totalAmount}</strong>
+                Pre estimated price is:{" "}
+                <strong>Rs. {preOrders.totalAmount}</strong>
               </p>
-              <p>Pre Payment Method: ONLINE</p>
+              <p>(Order waiting for the confirmation)</p>
             </Col>
           </Row>
           {/* Payment Summary */}

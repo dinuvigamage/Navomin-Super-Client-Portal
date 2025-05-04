@@ -52,7 +52,7 @@ const ShoppingCart = () => {
     (acc, item) => acc + item.Price * item.Quantity,
     0
   );
-  const totalAmount = normalOrdersTotalAmount + preOrdersTotalAmount;
+  const totalAmount = normalOrdersTotalAmount; // + preOrdersTotalAmount;
 
   const normalOrdersRemoveItem = (id) => {
     const updatedCart = normalOrders.filter((item) => item.Cart_Item_ID !== id);
@@ -443,10 +443,13 @@ const ShoppingCart = () => {
           </div>
           <div className="total-amount">
             {" "}
-            Total Pre Order Amount: Rs.{preOrdersTotalAmount.toFixed(2)}
+            Total Pre Order Estimated Amount: Rs.
+            {preOrdersTotalAmount.toFixed(2)}
           </div>
           <div className="total-amount">
             Total Amount: Rs.{totalAmount.toFixed(2)}
+            <br />
+            <h6>(Without Pre Order Estimation)</h6>
           </div>
           <button className="submit-btn" onClick={handleFinalizeOrder}>
             Finalize Order
